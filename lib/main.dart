@@ -54,26 +54,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var myFontSize = 30.0;
-  var _counter = 0.0;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  void setNewValue(double newValue){
-    setState(() {
-      myFontSize = newValue;
-      _counter = newValue;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,22 +93,10 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('You have pushed the button this many times:', style: TextStyle(fontSize: myFontSize)),
-            Text(
-              '$_counter',
-              style: TextStyle(fontSize: myFontSize),
 
-            ),
-            Slider(value: myFontSize, max: 100.0, min: 0.0, onChanged: setNewValue)
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
