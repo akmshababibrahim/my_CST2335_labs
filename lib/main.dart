@@ -62,6 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String actualPassword = "QWERTY123";
   String ideaImage = "idea.png";
   String stopImage = "stop.png";
+  String anotherPassword = "ASDF";
 
   @override
   void initState(){
@@ -80,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void getPassword(){
     setState(() {
       passwordValue = _password.text;
-      imageName = passwordValue == actualPassword ? ideaImage : stopImage;
+      imageName = (passwordValue == actualPassword) || (passwordValue == anotherPassword) ? ideaImage : stopImage;
 
     });
   }
