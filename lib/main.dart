@@ -104,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
             TextField(controller: _login,  decoration: InputDecoration(hintText: "Login", border: OutlineInputBorder())),
             TextField(controller: _password, decoration: InputDecoration(hintText: "Password", border: OutlineInputBorder()), obscureText: true,),
             ElevatedButton(onPressed: getPassword, style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), foregroundColor: Colors.blueAccent),child: Text("Login", style: TextStyle(fontSize: 24))),
-            Padding(padding: EdgeInsets.all(16.0) , child: Image.asset("images/$imageName", width: 100, height: 100))
+            Padding(padding: EdgeInsets.all(16.0) , child: Image.asset("images/$imageName", width: 300, height: 300))
           ],
         ),
       ),
