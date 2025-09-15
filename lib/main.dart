@@ -59,6 +59,9 @@ class _MyHomePageState extends State<MyHomePage> {
   late TextEditingController _password;
   String passwordValue = "";
   String imageName = "question-mark.png";
+  String actualPassword = "QWERTY123";
+  String ideaImage = "idea.png";
+  String stopImage = "stop.png";
 
   @override
   void initState(){
@@ -77,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void getPassword(){
     setState(() {
       passwordValue = _password.text;
-      imageName = passwordValue == "noshi123" ? "idea.png" : "stop.png";
+      imageName = passwordValue == actualPassword ? ideaImage : stopImage;
 
     });
   }
