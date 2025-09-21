@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Food Truck'),
     );
   }
 }
@@ -54,8 +55,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-
+  double _radius = 45;
+  Color _byMeatColor = Colors.white;
+  double _byMeatFontSize = 19;
+  double _textSubHeadingFontSize = 24;
   @override
   Widget build(BuildContext context) {
 
@@ -70,8 +73,33 @@ class _MyHomePageState extends State<MyHomePage> {
 
         child: Column(
 
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
+            Text("BROWSE CATEGORIES", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+            Padding(padding: const EdgeInsets.symmetric(horizontal: 16.0),child: Text("Not sure about exactly which recipe you are looking for? Do a search, or dive into our most popular categories", style: TextStyle(fontSize: 16), textAlign: TextAlign.start,)),
+            Text("BY MEAT", style: TextStyle(fontSize: _textSubHeadingFontSize, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceAround,children: [
+              Stack(alignment: Alignment.center, children: [CircleAvatar(backgroundImage: AssetImage("images/beef-image.jpg"),radius: _radius,), Text("BEEF", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _byMeatFontSize, color: _byMeatColor),)],),
+              Stack(alignment: Alignment.center, children: [CircleAvatar(backgroundImage: AssetImage("images/chicken.jpg"),radius: _radius,), Text("CHICKEN", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _byMeatFontSize, color: _byMeatColor),)],),
+              Stack(alignment: Alignment.center, children: [CircleAvatar(backgroundImage: AssetImage("images/pork.jpg"),radius: _radius,), Text("PORK", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _byMeatFontSize, color: _byMeatColor),)],),
+              Stack(alignment: Alignment.center, children: [ CircleAvatar(backgroundImage: AssetImage("images/seafood.jpg"),radius: _radius,), Text("SEAFOOD", style: TextStyle(fontWeight: FontWeight.bold, fontSize: _byMeatFontSize, color: _byMeatColor),)],),
+             ],),
+            Text("BY COURSE", style: TextStyle(fontSize: _textSubHeadingFontSize, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+              Column(children: [CircleAvatar(backgroundImage: AssetImage("images/main-dishes.jpg"),radius: _radius,), Padding(padding: const EdgeInsets.only(top: 8.0), child: Text("Main Dishes")),],),
+              Column(children: [CircleAvatar(backgroundImage: AssetImage("images/salad.jpg"),radius: _radius,), Padding(padding: const EdgeInsets.only(top: 8.0), child: Text("Salad Recipes")),],),
+              Column(children: [CircleAvatar(backgroundImage: AssetImage("images/side-dishes.jpg"),radius: _radius,), Padding(padding: const EdgeInsets.only(top: 8.0), child: Text("Side Dishes")),],),
+              Column(children: [CircleAvatar(backgroundImage: AssetImage("images/crockpot.jpg"),radius: _radius,), Padding(padding: const EdgeInsets.only(top: 8.0), child: Text("Crockpot")),],),
+            ],),
+            Text("BY DESSERT", style: TextStyle(fontSize: _textSubHeadingFontSize, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+            Padding(padding: const EdgeInsets.only(bottom: 8.0), child:Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+              Column(children: [CircleAvatar(backgroundImage: AssetImage("images/ice-cream.jpg"),radius: _radius,), Padding(padding: const EdgeInsets.only(top: 8.0), child: Text("Ice-cream")),],),
+              Column(children: [CircleAvatar(backgroundImage: AssetImage("images/brownies.jpg"),radius: _radius,), Padding(padding: const EdgeInsets.only(top: 8.0), child: Text("Brownies")),],),
+              Column(children: [CircleAvatar(backgroundImage: AssetImage("images/pie.jpg"),radius: _radius,), Padding(padding: const EdgeInsets.only(top: 8.0), child: Text("Pies")),],),
+              Column(children: [CircleAvatar(backgroundImage: AssetImage("images/cookies.jpg"),radius: _radius,), Padding(padding: const EdgeInsets.only(top: 8.0), child: Text("Cookies")),],),
+            ],)),
+
+
 
           ],
         ),
