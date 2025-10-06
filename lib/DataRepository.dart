@@ -17,15 +17,38 @@ class DataRepository{
       emailaddress = await _pref.getString("email");
 
   }
+  // static Future<void> saveData() async {
+  //   await _pref.setString("firstName", firstname.isEmpty ? "" : firstname);
+  //   await _pref.setString("lastName", lastname.isEmpty ? "" : lastname);
+  //   await _pref.setString("number", mobilenumber.isEmpty ? "" : mobilenumber);
+  //   await _pref.setString("email", emailaddress.isEmpty ? "" : emailaddress);
+  // }
+
   static Future<void> saveData() async {
-    // EncryptedSharedPreferences stores strings, so null -> empty or delete
-    await _pref.setString("firstName", firstname ?? '');
-    await _pref.setString("lastName", lastname ?? '');
-    await _pref.setString("number",    mobilenumber?? '');
-    await _pref.setString("email",    emailaddress ?? '');
+    if (firstname.isEmpty) {
+      await _pref.remove("firstName");
+    } else {
+      await _pref.setString("firstName", firstname);
+    }
+
+    if (lastname.isEmpty) {
+      await _pref.remove("lastName");
+    } else {
+      await _pref.setString("lastName", lastname);
+    }
+
+    if (mobilenumber.isEmpty) {
+      await _pref.remove("number");
+    } else {
+      await _pref.setString("number", mobilenumber);
+    }
+
+    if (emailaddress.isEmpty) {
+      await _pref.remove("email");
+    } else {
+      await _pref.setString("email", emailaddress);
+    }
   }
 
-  Future<void> clear() async {
-    await _pref.clear();
-  }
+
 }

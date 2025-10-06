@@ -24,7 +24,7 @@ class ProfilePageState extends State<ProfilePage>{
     _email = TextEditingController();
 
     _firstName.addListener((){
-      DataRepository.firstname = _firstName.text.trim();
+      DataRepository.firstname = _firstName.text.trim() ;
     });
     _lastName.addListener((){
       DataRepository.lastname = _lastName.text.trim();
@@ -159,7 +159,7 @@ class ProfilePageState extends State<ProfilePage>{
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(12),
-                  shape: const CircleBorder(), // optional, to make it round
+                  shape: const CircleBorder(),
                 ),
                 child: const Icon(Icons.call),
               ),
@@ -169,7 +169,7 @@ class ProfilePageState extends State<ProfilePage>{
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(12),
-                  shape: const CircleBorder(), // optional, to make it round
+                  shape: const CircleBorder(),
                 ),
                 child: const Icon(Icons.sms),
               ),
@@ -183,7 +183,7 @@ class ProfilePageState extends State<ProfilePage>{
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.all(12),
-                    shape: const CircleBorder(), // optional, to make it round
+                    shape: const CircleBorder(),
                   ),
                   child: const Icon(Icons.email),
                 )
