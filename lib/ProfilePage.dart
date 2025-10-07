@@ -149,6 +149,13 @@ class ProfilePageState extends State<ProfilePage>{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Text(
+              "Welcome Back ${DataRepository.loginName}",
+              style: TextStyle(
+                fontSize: 24,         // text size
+                fontWeight: FontWeight.bold, // bold text
+              ),
+            ),
             Flexible(child: Padding(padding: const EdgeInsets.all(8.0), child: TextField(controller: _firstName, decoration: InputDecoration(hintText: "First Name", border: OutlineInputBorder(),),),),),
             Flexible(child: Padding(padding: const EdgeInsets.all(8.0), child: TextField(controller: _lastName, decoration: InputDecoration(hintText: "Last Name", border: OutlineInputBorder(),),),),),
             Row(children: [
