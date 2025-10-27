@@ -55,36 +55,36 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  late TextEditingController _login;
-  late TextEditingController _password;
-  String passwordValue = "";
-  String imageName = "question-mark.png";
-  String actualPassword = "QWERTY123";
-  String ideaImage = "idea.png";
-  String stopImage = "stop.png";
-  String anotherPassword = "ASDF";
+  List<String> items = [];
+  List<String> quantity = [];
+  TextEditingController itemController = TextEditingController();
+  TextEditingController quantityController = TextEditingController();
 
-  @override
-  void initState(){
-    super.initState();
-    _login = TextEditingController();
-    _password = TextEditingController();
+  void add(){
+    setState(() {
+      items.add(itemController.text.trim());
+      quantity.add(quantityController.text.trim());
+      itemController.text = "";
+      quantityController.text = "";
+    });
+    FocusScope.of(context).unfocus();
   }
 
   @override
-  void dispose(){
-    _login.dispose();
-    _password.dispose();
+  void initState() {
+    super.initState();
+    itemController.addListener(() => setState(() {}));
+    quantityController.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    itemController.dispose();
+    quantityController.dispose();
     super.dispose();
   }
 
-  void getPassword(){
-    setState(() {
-      passwordValue = _password.text;
-      imageName = (passwordValue == actualPassword) || (passwordValue == anotherPassword) ? ideaImage : stopImage;
 
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,19 +96,52 @@ class _MyHomePageState extends State<MyHomePage> {
 
         title: Text(widget.title),
       ),
-      body: Center(
-
-        child: Column(
-
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(controller: _login,  decoration: InputDecoration(hintText: "Login", border: OutlineInputBorder())),
-            TextField(controller: _password, decoration: InputDecoration(hintText: "Password", border: OutlineInputBorder()), obscureText: true,),
-            ElevatedButton(onPressed: getPassword, style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), foregroundColor: Colors.blueAccent),child: Text("Login", style: TextStyle(fontSize: 24))),
-            Padding(padding: EdgeInsets.all(16.0) , child: Image.asset("images/$imageName", width: 300, height: 300))
-          ],
-        ),
-      ),
+      body: ListPage(),
     );
   }
+
+
+  Widget ListPage(){
+
+    return Padding(padding: EdgeInsets.all(16.0),
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(child: TextField(controller: itemController, decoration: const InputDecoration(hintText: 'Item', hintStyle: TextStyle(color: Colors.blueGrey),border: OutlineInputBorder(),))),
+            Expanded(child: TextField(controller: quantityController, keyboardType: TextInputType.number, decoration: const InputDecoration(hintText: 'Quantity', hintStyle: TextStyle(color: Colors.blueGrey), border: OutlineInputBorder(),))),
+            Expanded(child: ElevatedButton(onPressed: (itemController.text.isEmpty || quantityController.text.isEmpty) ? null : add, child: Text("Add")))
+          ],
+        ),
+        Expanded(child: Padding(padding: EdgeInsets.all(16.0), child: ListView.builder(itemCount: items.length, itemBuilder: (context, rowNum) {return
+          GestureDetector(child: Center(child: Text("${rowNum + 1}. ${items[rowNum]}, quantity: ${quantity[rowNum]}")),
+          onLongPress: (){
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                title: const Text("Delete item"),
+                content: const Text("Are you sure?"),
+                actions: [
+                  FilledButton(child: Text("Yes"), onPressed: (){
+                    Navigator.pop(context);
+                    setState(() {
+                      items.removeAt(rowNum);
+                      quantity.removeAt(rowNum);
+                    });
+                  },),
+                  FilledButton(child: Text("Cancel"), onPressed: (){
+                    Navigator.pop(context);
+                  },)
+                ],
+              )
+            );
+          },);
+        })))
+      ],
+    ));
+  }
 }
+
+
