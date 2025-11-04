@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:my_cst2335_labs/ItemDAO.dart';
+import 'package:my_cst2335_labs/ItemDatabase.dart';
+
+import 'Item.dart';
 
 void main() {
   runApp(const MyApp());
@@ -55,36 +59,56 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  late TextEditingController _login;
-  late TextEditingController _password;
-  String passwordValue = "";
-  String imageName = "question-mark.png";
-  String actualPassword = "QWERTY123";
-  String ideaImage = "idea.png";
-  String stopImage = "stop.png";
-  String anotherPassword = "ASDF";
+  // List<String> items = [];
+  // List<String> quantity = [];
+  List<Item> listOfItems = [];
+  TextEditingController itemController = TextEditingController();
+  TextEditingController quantityController = TextEditingController();
+  late ItemDAO itemDao;
 
-  @override
-  void initState(){
-    super.initState();
-    _login = TextEditingController();
-    _password = TextEditingController();
+  void add() async {
+    Item newItem = Item(Item.ID++, itemController.text.trim(), int.parse(quantityController.text.trim()));
+    await itemDao.insertItem(newItem);
+
+    setState(() {
+      // items.add(itemController.text.trim());
+      // quantity.add(quantityController.text.trim());
+
+      listOfItems.add(newItem);
+
+      itemController.text = "";
+      quantityController.text = "";
+    });
+    FocusScope.of(context).unfocus();
   }
 
   @override
-  void dispose(){
-    _login.dispose();
-    _password.dispose();
+  void initState() {
+    super.initState();
+    itemController.addListener(() => setState(() {}));
+    quantityController.addListener(() => setState(() {}));
+
+    $FloorItemDatabase.databaseBuilder("mydatabase.db").build().then((database){
+      itemDao = database.myItemDAO;
+
+      itemDao.getAllItems().then((itemList){
+        setState(() {
+          listOfItems.addAll(itemList);
+
+        });
+      });
+    });
+
+  }
+
+  @override
+  void dispose() {
+    itemController.dispose();
+    quantityController.dispose();
     super.dispose();
   }
 
-  void getPassword(){
-    setState(() {
-      passwordValue = _password.text;
-      imageName = (passwordValue == actualPassword) || (passwordValue == anotherPassword) ? ideaImage : stopImage;
 
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,19 +120,54 @@ class _MyHomePageState extends State<MyHomePage> {
 
         title: Text(widget.title),
       ),
-      body: Center(
-
-        child: Column(
-
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(controller: _login,  decoration: InputDecoration(hintText: "Login", border: OutlineInputBorder())),
-            TextField(controller: _password, decoration: InputDecoration(hintText: "Password", border: OutlineInputBorder()), obscureText: true,),
-            ElevatedButton(onPressed: getPassword, style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), foregroundColor: Colors.blueAccent),child: Text("Login", style: TextStyle(fontSize: 24))),
-            Padding(padding: EdgeInsets.all(16.0) , child: Image.asset("images/$imageName", width: 300, height: 300))
-          ],
-        ),
-      ),
+      body: ListPage(),
     );
   }
+
+
+  Widget ListPage(){
+
+    return Padding(padding: EdgeInsets.all(16.0),
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(child: TextField(controller: itemController, decoration: const InputDecoration(hintText: 'Item', hintStyle: TextStyle(color: Colors.blueGrey),border: OutlineInputBorder(),))),
+            Expanded(child: TextField(controller: quantityController, keyboardType: TextInputType.number, decoration: const InputDecoration(hintText: 'Quantity', hintStyle: TextStyle(color: Colors.blueGrey), border: OutlineInputBorder(),))),
+            Expanded(child: ElevatedButton(onPressed: (itemController.text.isEmpty || quantityController.text.isEmpty) ? null : add, child: Text("Add")))
+          ],
+        ),
+        Expanded(child: Padding(padding: EdgeInsets.all(16.0), child: ListView.builder(itemCount: listOfItems.length, itemBuilder: (context, rowNum) {return
+          GestureDetector(child: Center(child: Text("${rowNum + 1}. ${listOfItems[rowNum].name}, quantity: ${listOfItems[rowNum].quantity}")),
+          onLongPress: (){
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                title: const Text("Delete item"),
+                content: const Text("Are you sure?"),
+                actions: [
+                  FilledButton(child: Text("Yes"), onPressed: () async {
+                    Navigator.pop(context);
+                    await itemDao.deleteItem(listOfItems[rowNum]);
+                    setState(() {
+                      // items.removeAt(rowNum);
+                      // quantity.removeAt(rowNum);
+                      listOfItems.removeAt(rowNum);
+                    });
+                  },),
+                  FilledButton(child: Text("Cancel"), onPressed: (){
+                    Navigator.pop(context);
+                  },)
+                ],
+              )
+            );
+          },);
+        })))
+      ],
+    ));
+  }
 }
+
+
