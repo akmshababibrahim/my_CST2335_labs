@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:my_cst2335_labs/ItemDAO.dart';
+import 'package:my_cst2335_labs/ItemDatabase.dart';
+
+import 'Item.dart';
 
 void main() {
   runApp(const MyApp());
@@ -55,15 +59,23 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  List<String> items = [];
-  List<String> quantity = [];
+  // List<String> items = [];
+  // List<String> quantity = [];
+  List<Item> listOfItems = [];
   TextEditingController itemController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
+  late ItemDAO itemDao;
 
-  void add(){
+  void add() async {
+    Item newItem = Item(Item.ID++, itemController.text.trim(), int.parse(quantityController.text.trim()));
+    await itemDao.insertItem(newItem);
+
     setState(() {
-      items.add(itemController.text.trim());
-      quantity.add(quantityController.text.trim());
+      // items.add(itemController.text.trim());
+      // quantity.add(quantityController.text.trim());
+
+      listOfItems.add(newItem);
+
       itemController.text = "";
       quantityController.text = "";
     });
@@ -75,6 +87,18 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     itemController.addListener(() => setState(() {}));
     quantityController.addListener(() => setState(() {}));
+
+    $FloorItemDatabase.databaseBuilder("mydatabase.db").build().then((database){
+      itemDao = database.myItemDAO;
+
+      itemDao.getAllItems().then((itemList){
+        setState(() {
+          listOfItems.addAll(itemList);
+
+        });
+      });
+    });
+
   }
 
   @override
@@ -115,8 +139,8 @@ class _MyHomePageState extends State<MyHomePage> {
             Expanded(child: ElevatedButton(onPressed: (itemController.text.isEmpty || quantityController.text.isEmpty) ? null : add, child: Text("Add")))
           ],
         ),
-        Expanded(child: Padding(padding: EdgeInsets.all(16.0), child: ListView.builder(itemCount: items.length, itemBuilder: (context, rowNum) {return
-          GestureDetector(child: Center(child: Text("${rowNum + 1}. ${items[rowNum]}, quantity: ${quantity[rowNum]}")),
+        Expanded(child: Padding(padding: EdgeInsets.all(16.0), child: ListView.builder(itemCount: listOfItems.length, itemBuilder: (context, rowNum) {return
+          GestureDetector(child: Center(child: Text("${rowNum + 1}. ${listOfItems[rowNum].name}, quantity: ${listOfItems[rowNum].quantity}")),
           onLongPress: (){
             showDialog(
               context: context,
@@ -124,11 +148,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 title: const Text("Delete item"),
                 content: const Text("Are you sure?"),
                 actions: [
-                  FilledButton(child: Text("Yes"), onPressed: (){
+                  FilledButton(child: Text("Yes"), onPressed: () async {
                     Navigator.pop(context);
+                    await itemDao.deleteItem(listOfItems[rowNum]);
                     setState(() {
-                      items.removeAt(rowNum);
-                      quantity.removeAt(rowNum);
+                      // items.removeAt(rowNum);
+                      // quantity.removeAt(rowNum);
+                      listOfItems.removeAt(rowNum);
                     });
                   },),
                   FilledButton(child: Text("Cancel"), onPressed: (){
