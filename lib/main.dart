@@ -65,6 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController itemController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
   late ItemDAO itemDao;
+  Item? selectedItem = null;
 
   void add() async {
     Item newItem = Item(Item.ID++, itemController.text.trim(), int.parse(quantityController.text.trim()));
@@ -120,11 +121,56 @@ class _MyHomePageState extends State<MyHomePage> {
 
         title: Text(widget.title),
       ),
-      body: ListPage(),
+      body: reactiveLayout(),
     );
   }
 
+  Widget reactiveLayout(){
+    var size = MediaQuery.of(context).size;
+    var height = size.height;
+    var width = size.width;
+    if( (width>height) && (width > 720)) {
+      return Row(
+          children:[
+            Expanded(flex: 1, // takes  a/(a+b)  of available width
+                child: ListPage()  ),
+            Expanded(flex: 2, // takes b(a+b) of available width
+                child: DetailsPage())
+          ]);
+    }
+    else{
+      if (selectedItem == null){
+        return ListPage();
+      }
+      else{
+        return DetailsPage();
+      }
+    }
+  }
 
+  Widget DetailsPage(){
+    if (selectedItem != null){
+      return Center(
+        child: Column(children:
+        [Text("ID: ${selectedItem?.id} "),
+          Text("Name: ${selectedItem?.name} "),
+          Text("Quantity: ${selectedItem?.quantity}"),
+          Spacer(),
+          OutlinedButton(onPressed: (){setState(() {
+            selectedItem = null;
+          });}, child: Text("Close")),
+          OutlinedButton(onPressed: () async {
+            await itemDao.deleteItem(selectedItem!);
+            setState(() {
+              listOfItems.remove(selectedItem);
+              selectedItem = null;
+          });}, child: Text("Delete"))
+        ], mainAxisAlignment: MainAxisAlignment.center,),);
+    }
+    else{
+      return Text("Please select an item.");
+    }
+  }
   Widget ListPage(){
 
     return Padding(padding: EdgeInsets.all(16.0),
@@ -141,6 +187,11 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         Expanded(child: Padding(padding: EdgeInsets.all(16.0), child: ListView.builder(itemCount: listOfItems.length, itemBuilder: (context, rowNum) {return
           GestureDetector(child: Center(child: Text("${rowNum + 1}. ${listOfItems[rowNum].name}, quantity: ${listOfItems[rowNum].quantity}")),
+          onTap:(){
+            setState((){
+              selectedItem = listOfItems[rowNum];
+            });
+              },
           onLongPress: (){
             showDialog(
               context: context,
